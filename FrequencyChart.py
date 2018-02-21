@@ -14,35 +14,48 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Global variables for the graph
-name    = "Pentane"
-files   = ["005","01","02","03","04","05","06","07","08","09","100"]
+name    = "TetradecaneHeights/Tetradecane"
+files   = ["005", "01", "02","03","04","05","06","07","08","09","100"]
 yValues = [5.00, 10.00, 20.00, 30.00, 40.00, 50.00, 60.00, 70.00, 80.00, 90.00, 100.00]
-colors  = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w','cyan', 'fuchsia', 'silver']
+colors  = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w','cyan', 'fuchsia', "orange"]
+
+# Set array with data
+# Filter and calculate frequencies
+data    = []
+minList = []
+maxList = []
+
+for i in range(len(files)):
+    f = open(name + files[i] + ".txt") # open file with coordinates
+    tmpArr = np.array([float(x) for x in f.read().split("\n")[:-1]]) # split and clean the data from the file
+    print tmpArr
+    minList.append(min(tmpArr))
+    maxList.append(max(tmpArr))
+    data.append(tmpArr)
+dataParsed = np.asarray(data)
+
 
 # delta values to produce the frequency
-dMin = 18.391
-dMax = 29.00985
+dMin = min(minList)
+dMax = max(maxList)
 
 # Define figures for the plot
 fig = plt.figure()
-fig.suptitle('Distribution of PABA Heights',fontsize=18)
+fig.suptitle('Distribution of PABA Heights - Minus Base',fontsize=18)
 
 ax  = fig.add_subplot(111)
 fig.subplots_adjust(top=0.90)
 
-ax.set_title('5-atoms spacer arm')
+ax.set_title('14-atoms spacer arm')
 
 ax.set_xlabel('PABA Height (A)')
 ax.set_ylabel('PABA Occupancy')
 
 # Filter and calculate frequencies
 for i in range(len(files)):
-    f = open(name + files[i] + ".txt") # open file with coordinates
-    # split and clean the data from the file
-    data = np.array([float(x) for x in f.read().split("\n")[:-1]])
 
     # Calculate frequencies
-    h = np.histogram(data,20,(dMin,dMax),density=True)
+    h = np.histogram(data[i],20,(dMin,dMax),density=True)
 
     n = len(h[1][:-1])
     x = h[1][:-1]
