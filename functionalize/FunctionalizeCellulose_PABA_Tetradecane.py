@@ -6,7 +6,8 @@
 # project first and then add it to your path as a python path variable. The aim of this project is to study
 # the frequencies of ligands over this cellulose surfaces at different densities.
 # The output of this program is a set of .wfm files that will have the configurations for each
-# simulation for NAMD. You can easily see the mixture in wolffia.
+# simulation for NAMD. You can easily see the mixture in wolffia. This script is directed to 5-atoms spacer
+# arms made of para-aminobenzamidine.
 # Authors: Jordan Alexis Caraballo-Vega  University of Puerto Rico at Humacao
 #          Jose O. Sotero-Esteva         University of Puerto Rico at Humacao
 #-------------------------------------------------------------------------------------------------------

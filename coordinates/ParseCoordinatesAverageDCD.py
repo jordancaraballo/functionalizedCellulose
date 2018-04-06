@@ -91,7 +91,7 @@ for frame in dcd[2]:
                     dist = math.sqrt((frame[0][i] - frame[0][atom])**2 + (frame[1][i] - frame[1][atom])**2 + (frame[2][i] - frame[2][atom])**2)
                     if dist < temp:
                         temp    = dist
-                        tempPos = atom
+                        tempPos = atom + 1
             except IndexError:
                 pass
 
