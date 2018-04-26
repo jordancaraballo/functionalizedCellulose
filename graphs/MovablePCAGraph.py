@@ -1,3 +1,12 @@
+#!/bin/python
+# -*- coding: utf-8 -*-
+#-------------------------------------------------------------------------------------------------------
+# Script developed to create a PCA chart from the frequencies and norms of files that hold
+# coordinates. The coordinates are taken from frames at the desired range. Coordinates can be
+# calculated using the MovablePCA.py script.
+# Authors: Jordan Alexis Caraballo-Vega  University of Puerto Rico at Humacao
+#          Jose O. Sotero-Esteva         University of Puerto Rico at Humacao
+#-------------------------------------------------------------------------------------------------------
 # Some background information
 # Each Tetradecane molecule has 52 atoms
 # Tetradecane005 has 156 dimensions in total in the x axis (3 molecules x 52 = 156)
@@ -64,17 +73,6 @@ ax.plot(simMols[0::3, 0], simMols[0::3, 1], simMols[0::3, 2], c='b')
 ax.plot(simMols[1::3, 0], simMols[1::3, 1], simMols[1::3, 2], c='g')
 ax.plot(simMols[2::3, 0], simMols[2::3, 1], simMols[2::3, 2], c='r')
 
-#ax.scatter(simMols[1::3, 0], simMols[1::3, 1], simMols[1::3, 2], c='g',
-#           cmap=plt.cm.Set1, edgecolor='k', s=40, marker='|')
-#ax.scatter(simMols[2::3, 0], simMols[2::3, 1], simMols[2::3, 2], c='r',
-#           cmap=plt.cm.Set1, edgecolor='k', s=40, marker='|')
-
-#ax.scatter(X_reduced[:600, 0], X_reduced[:600, 1], X_reduced[:600, 2], c='b',
-#           cmap=plt.cm.Set1, edgecolor='k', s=40)
-#ax.scatter(X_reduced[600:1400, 0], X_reduced[600:1400, 1], X_reduced[600:1400, 2],c='g',
-#           cmap=plt.cm.Set1, edgecolor='k', s=40)
-#ax.scatter(X_reduced[1400:2800, 0], X_reduced[1400:2800, 1], X_reduced[1400:2800, 2],c='r',
-#           cmap=plt.cm.Set1, edgecolor='k', s=40)
 
 ax.set_title("First three PCA directions")
 ax.set_xlabel("1st eigenvector")
@@ -85,3 +83,8 @@ ax.set_zlabel("3rd eigenvector")
 ax.w_zaxis.set_ticklabels([])
 
 plt.show()
+
+"""
+Main code execution
+"""
+#if __name__ == "__main__":
