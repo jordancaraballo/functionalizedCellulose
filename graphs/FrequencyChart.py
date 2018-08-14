@@ -14,14 +14,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Global variables for the graph
-#name    = "PentaneHeights/Pentane"
-#files   = ["005", "01", "02","03","04","05","06","07","08","09","100"]
-#yValues = [5.00, 10.00, 20.00, 30.00, 40.00, 50.00, 60.00, 70.00, 80.00, 90.00, 100.00]
-#colors  = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w','cyan', 'fuchsia', "orange"]
-name    = "Tetradecane"
-files   = ["005", "01", "02","03","04","05","06","07","08","09","100"]
+#name    = "../coordinates/Heptane"
+name    = "../data/Tetradecane"
+files   = ["005", "01", "02", "03","04","05","06", "07", "08", "09", "100"]
 yValues = [5.00, 10.00, 20.00, 30.00, 40.00, 50.00, 60.00, 70.00, 80.00, 90.00, 100.00]
-colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w','cyan', 'fuchsia', "orange"]
+colors  = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w','cyan', 'fuchsia', "orange"]
 
 # Set array with data
 # Filter and calculate frequencies
@@ -50,7 +47,7 @@ fig.suptitle('Distribution of PABA Heights - Minus Base',fontsize=18)
 ax  = fig.add_subplot(111)
 fig.subplots_adjust(top=0.90)
 
-ax.set_title('5-atoms spacer arm')
+ax.set_title('7-atoms spacer arm')
 
 ax.set_xlabel('PABA Height (A)')
 ax.set_ylabel('PABA Occupancy')

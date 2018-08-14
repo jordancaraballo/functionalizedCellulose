@@ -3,3 +3,6 @@ pictures/
 
 # Ignore data taken from simulations
 data/
+
+# Ignore results
+HeigthsCoordinates_05012018.tar.gz

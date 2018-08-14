@@ -28,8 +28,8 @@ import numpy as np                        # include numpy
 #-------------------------------------------------------------------------------------------------------
 # Global variables
 #-------------------------------------------------------------------------------------------------------
-mix      = "Tetradecane02"                           # name of the mixture - e.g Pentane09
-workPath = "/media/jordancaraballo/Datos_Frances/jordancaraballo/Investigacion/Tetradecane/" + mix + "/"    # path to mixture - parental directory
+mix      = "Tetradecane100"                           # name of the mixture - e.g Pentane09
+workPath = "/media/jordancaraballo/b3cc799d-d1d9-43a9-a87d-321420b4a13b/home/Tetradecane/" + mix + "/"    # path to mixture - parental directory
 psfFile  = workPath + mix + ".psf"                # name of the psf file
 pdbFile  = workPath + mix + "_lastFrame.pdb"      # header of the pdb files
 dcdFile  = workPath + mix + "_Last1000Frames.dcd" # dcd file
@@ -240,13 +240,10 @@ def calculateNormalizedHeights(heigths, baseHeights):
 #------------------------------------------------------------------------   
 
 
-
-
-
 midTypePos, uppTypePos, pabaNum = getIndexUppAndMidTypes(dcd[0], pdb_list, psf_list, upper_types, mid_type)
 upperHeights                    = getUpperHeights       (dcd[1], uppTypePos)
 midTypeList                     = getMidTypePos         (dcd[2], midTypePos, pdb_list, psf_list, base_type)
 baseHeights, baseTot            = getBaseCoordinates    (dcd[3], midTypeList)
-calculateNormalizedHeights(upperHeights, baseHeights)
-#calculateAverageHeight(baseTot, pabaNum, upperHeights)
+#calculateNormalizedHeights(upperHeights, baseHeights)
+calculateAverageHeight(baseTot, pabaNum, upperHeights)
 
