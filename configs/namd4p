@@ -1,0 +1,1 @@
+charmrun +p4 namd2 +idlepoll $1
