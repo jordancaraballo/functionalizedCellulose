@@ -13,25 +13,23 @@ sudo apt-get install python python-qt4-gl python-qwt5-qt4 pyqt4-dev-tools python
 ```
 ### ParseCoordinatesAverageDCD.py and ParseCoordinatesMinusBaseDCD.py
 
-Description
+Description in progress.
 
 ### ParseCoordinatesPDB
 
-Description
+Description in progress.
 
 ### FrequencyChart
 
-Description
+Description in progress.
 
 ### FunctionalizeCellulose
 
-Description
+Description in progress.
 
 ### from_dcd_to_pdb.sh
 
-Description
-
-###
+Description in progress.
 
 ## Authors
 

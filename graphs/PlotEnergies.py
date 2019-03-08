@@ -1,10 +1,17 @@
+#!/bin/python
+# -*- coding: utf-8 -*-
+#-------------------------------------------------------------------------------------------------------
+# Script designed to plot energies output (specially potential and cinetic) from NAMD and LAMMPS simulations.
+# The script is designed to create a simple plot. There is nothing complicated here. It works to facilitate and
+# speed up other processes.
+
 import matplotlib.pyplot as plt
 import numpy as np
 
 # Legend of output file
 #ETITLE: TS, BOND, ANGLE, DIHED, IMPRP, ELECT, VDW, BOUNDARY, MISC, KINETIC, TOTAL, TEMP, POTENTIAL, TOTAL3, TEMPAVG, PRESSURE, GPRESSURE, VOLUME, PRESSAVG, GPRESSAVG
 
-file_name = "/media/jordancaraballo/b3cc799d-d1d9-43a9-a87d-321420b4a13b/home/Pentane/Pentane100/Pentane100_EnergyOutput.txt"
+file_name = "Pentane100_EnergyOutput.txt"
 energies  = [line.strip().split() for line in open(file_name,'r').readlines() ][9:]       # list with psf file lines
 
 t = list()
