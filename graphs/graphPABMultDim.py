@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Mar 18 17:46:13 2019
+
+@author: jordancaraballo
+"""
+
 # Script to parse and modify PAB. Designed for python2 since wolffia is python2.
 # Authors: Jordan A. Caraballo Vega, Jose O. Sotero Esteva
 #----------------------------------------------------------------------------------------------------------------
@@ -7,15 +14,18 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import sys, os                                     # environmental variables
-import itertools                                   # iterate over list
-import heapq                                       # import for median
 import math                                        # import for distance calculation
 import numpy as np                                 # include numpy
 import subprocess                                  # execute bash commands if needed
 from scipy import optimize                         # for least square 
 
-from sklearn import datasets
 from sklearn.cluster import KMeans
+from sklearn.cluster import DBSCAN
+from sklearn.manifold import TSNE
+from scipy.cluster.hierarchy import linkage, dendrogram
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
 #----------------------------------------------------------------------------------------------------------------
 # Functions
 #----------------------------------------------------------------------------------------------------------------
@@ -123,70 +133,72 @@ def getVarSpiral_A(molecule, index_highest=-1, index_base=0):
 #---------------------------------------------------------------------------
 # Playing with KMeans Algorithm
 def kmeans(atoms):
-
-    # Loading dataset
-    #iris_df = datasets.load_iris()
-    #print iris_df
-
     # Declaring Model
     model = KMeans(n_clusters=3)
-    
     # Fitting Model
-    #model.fit(iris_df.data)
     model.fit(atoms)
     
     # Predicitng a single input
     #predicted_label = model.predict([[7.2, 3.5, 0.8, 1.6]])
     
     # Prediction on the entire data
-    #all_predictions = model.predict(iris_df.data)
     all_predictions = model.predict(atoms)
-    
-    # Printing Predictions
-    #print(predicted_label)
+    #Plot the clusters obtained using k means
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    scatter = ax.scatter(atoms[:,0],atoms[:,1],
+                         c=all_predictions,s=50)
+    ax.set_title('K-Means Clustering')
+    plt.colorbar(scatter)
     print(all_predictions)
 
 def hierarchical(atoms):
-    # Importing Modules
-    from scipy.cluster.hierarchy import linkage, dendrogram
-    import matplotlib.pyplot as plt
-
-    """
-    Perform hierarchical clustering on samples using the
-    linkage() function with the method='complete' keyword argument.
-    Assign the result to mergings.
-    """
     #mergings = linkage(samples, method='complete')
     mergings = linkage(atoms, method='complete')
-
     dendrogram(mergings,
                leaf_rotation=90,
                leaf_font_size=6,
-               )
-    
+               )    
     plt.show()
-    
-def tSNE(atoms):
-    # Importing Modules
-    from sklearn.manifold import TSNE
-    import matplotlib.pyplot as plt
-    
-    # Loading dataset
-    #iris_df = datasets.load_iris()
-    
+  
+def tSNE(atoms, learningRate=100):
     # Defining Model
-    model = TSNE(learning_rate=100)
-    
+    model = TSNE(learning_rate=learningRate)
     # Fitting Model
     transformed = model.fit_transform(atoms)
-    print transformed
-    
     # Plotting 2d t-Sne
     x_axis = transformed[:, 0]
     y_axis = transformed[:, 1]
-    
+    plt.scatter(x_axis, y_axis,c=atoms[:,2])#, c=iris_df.target)
+    plt.show()
+
+def dbscan(atoms):
+    # Declaring Model
+    dbscan = DBSCAN()
+    # Fitting
+    dbscan.fit(atoms)
+    # Transoring Using PCA
+    pca = PCA(n_components=2).fit(atoms)
+    pca_2d = pca.transform(atoms)
+    # Plotting 2d t-Sne
+    x_axis = pca_2d[:, 0]
+    y_axis = pca_2d[:, 1]
     plt.scatter(x_axis, y_axis)#, c=iris_df.target)
     plt.show()
+
+def pca2d(atoms):
+    from sklearn.decomposition import PCA
+    pca = PCA(n_components=2)
+    X_reduced =pca.fit_transform(atoms)
+    plt.scatter(X_reduced[:, 0],X_reduced[:, 1])
+    
+def pca3d(atoms):
+    from sklearn.decomposition import PCA
+    fig = plt.figure(1, figsize=(8, 6))
+    ax = Axes3D(fig, elev=-150, azim=110)
+    pca = PCA(n_components=3)
+    X_reduced =pca.fit_transform(atoms)
+    ax.scatter3D(X_reduced[:, 0],X_reduced[:, 1],X_reduced[:, 2])
 #---------------------------------------------------------------------------
 # Purpose: Plotting scatter plot
 def visualize_coordinates(x,y,z):
@@ -195,46 +207,81 @@ def visualize_coordinates(x,y,z):
     ax.plot(x, y, z) # scatter plot
     plt.show() # show interactive image
 #---------------------------------------------------------------------------
+def reshapeCoordinates(molecules):
+    finalset = list()
+    for molecule in molecules:
+        reshape = molecule.reshape(3,12)
+        finalset.append(np.concatenate([reshape[0], reshape[1], reshape[2]], axis=0))
+    return np.array(finalset)
+
+#---------------------------------------------------------------------------
 # Main
 #---------------------------------------------------------------------------
 if __name__ == "__main__":
     
-    ### Getting files information and loading data into lists
-    psfFile = "/home/jordancaraballo/Documents/Research/Cellulose/Tetradecane/Tetradecane05/Tetradecane05.psf" # name of the psf file
-    psfList = parsePSF_toList(psfFile) # takes the list of psf lines
+    densities = ["100","09","08","07","06","05","04","03","02","01","005"]
+    #densities = ["100"]
     
-    pdbFile = "/home/jordancaraballo/Documents/Research/Cellulose/Tetradecane/Tetradecane05/Tetradecane05_lastFrame.pdb"
-    pdbList = parsePDB_toList(pdbFile)
-
-    ### Starting to define spacer arms information and coordinates
-    pabaAtoms = getAtomsMol(psfList, 'PAB') # takes paba atoms from psflist
-    baseAtoms  = getAtoms(psfList, 'C15', tcolumn=5) # takes C15 (base carbon) atom from each molecule
-    upperAtoms = getAtoms(psfList, 'C60', tcolumn=5) # takes C06 (upper carbon) atom from each molecule
+    finalCoordinates = list()
     
-    ### Starting to define graph and shortests path
-    numBonds  = (subprocess.check_output("cat " + psfFile + "| grep NBOND | cut -d \" \" -f4", shell=True))[:-1]
-    bondConnects = getBonds(psfList, numBonds) # get bond connections list
+    ### Iterate over all
+    for i in densities:
+        
+        ### Getting files information and loading data into lists
+        psfFile = "/home/jordancaraballo/Documents/Research/Cellulose/Tetradecane/Tetradecane"+i+"/Tetradecane"+i+".psf" # name of the psf file
+        psfList = parsePSF_toList(psfFile) # takes the list of psf lines
+        
+        pdbFile = "/home/jordancaraballo/Documents/Research/Cellulose/Tetradecane/Tetradecane"+i+"/Tetradecane"+i+"_lastFrame.pdb"
+        pdbList = parsePDB_toList(pdbFile)
     
-    G = nx.Graph()
-    G.add_edges_from(bondConnects)
-    Gsub = G.subgraph(pabaAtoms)
-    #nx.draw(Gsub)
-
-    ### Starting to get atom indices and coordinates from the spacer arm    
-    comp = list(Gsub.subgraph(c) for c in nx.connected_components(Gsub))
-    graphIndexes = getSpacerArmGraph(comp,baseAtoms,upperAtoms) #list of atom indexes
-    print (len(graphIndexes[0]))
-    atomCoordinates = getPABACoordinates(graphIndexes, psfList, pdbList) # numpy Array
-
-    reshapedCoordinates = list()
-    for molecule in atomCoordinates:
-        reshape = molecule.reshape(3,12)
-        reshapedCoordinates.append(np.concatenate([reshape[0], reshape[1], reshape[2]], axis=0))
-    reshapedCoordinates = np.array(reshapedCoordinates)
+        ### Starting to define spacer arms information and coordinates
+        pabaAtoms = getAtomsMol(psfList, 'PAB') # takes paba atoms from psflist
+        baseAtoms  = getAtoms(psfList, 'C15', tcolumn=5) # takes C15 (base carbon) atom from each molecule
+        upperAtoms = getAtoms(psfList, 'C60', tcolumn=5) # takes C06 (upper carbon) atom from each molecule
+        
+        ### Starting to define graph and shortests path
+        numBonds  = (subprocess.check_output("cat " + psfFile + "| grep NBOND | cut -d \" \" -f4", shell=True))[:-1]
+        bondConnects = getBonds(psfList, numBonds) # get bond connections list
+        
+        G = nx.Graph()
+        G.add_edges_from(bondConnects)
+        Gsub = G.subgraph(pabaAtoms)
+        #nx.draw(Gsub)
     
-    kmeans(reshapedCoordinates)
-    #hierarchical(reshapedCoordinates)
-    tSNE(reshapedCoordinates)
+        ### Starting to get atom indices and coordinates from the spacer arm    
+        comp = list(Gsub.subgraph(c) for c in nx.connected_components(Gsub))
+        graphIndexes = getSpacerArmGraph(comp,baseAtoms,upperAtoms) #list of atom indexes
+        print (len(graphIndexes[0]))
+        atomCoordinates = getPABACoordinates(graphIndexes, psfList, pdbList) # numpy Array
+    
+        ### Reshape to form numpy array of (# molecules, 36)
+        reshapedNumpArray = reshapeCoordinates(atomCoordinates)
+                
+        ### If trying to concatenate all of the results
+        finalCoordinates.append(reshapedNumpArray)
+        
+        ### Get normal array of molecules
+        #normalNumpArray = np.array(atomCoordinates)
+        
+        #solvingSpiral(normalNumpArray)
+         
+   
+    ### Trying to classify
+    finalset = np.array(finalCoordinates)
+    finalset = np.concatenate(finalset,axis=0)
+    hola = finalset[:int((finalset.shape[0])/2),]
+    print hola
+    print hola.shape
+    #finalset = StandardScaler().fit_transform(finalset)
+    
+    #kmeans(finalset)
+    #hierarchical(finalset)
+    #tSNE(finalset,500)
+    #dbscan(finalset)
+    #pca2d(finalset)
+    #pca3d(finalset)
+    
+    
     ### For each molecule in the system
     #coordinates_rotated = list() # will be a list of numpy arrays
     #for molecule in atomCoordinates:
@@ -259,8 +306,6 @@ if __name__ == "__main__":
     3. Resolver (d (min t)/dt) = 0 con algun metodo numero (Newton maybe)
     """
     ### Solving for the Spiral equation
-    
-    
     
     
     
