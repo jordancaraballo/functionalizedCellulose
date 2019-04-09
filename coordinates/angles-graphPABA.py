@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Apr  8 15:01:45 2019
+
+@author: jordancaraballo
+"""
+
 # Script to parse and modify PAB. Designed for python2 since wolffia is python2.
 # Authors: Jordan A. Caraballo Vega, Jose O. Sotero Esteva
 #----------------------------------------------------------------------------------------------------------------
@@ -192,13 +199,13 @@ def kmeansNew(atoms):
     #Plot the clusters obtained using k means
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    #scatter = ax.scatter(atoms[:,0],atoms[:,1], c=all_predictions,s=50)
+    scatter = ax.scatter(atoms[:,0],atoms[:,1], c=all_predictions,s=50)
     
-    scatter = ax.scatter(atoms[-3:,0],atoms[-3:,1], s=50,c='blue') # 005
-    scatter = ax.scatter(atoms[-10:-3,0],atoms[-10:-3,1], s=50,c='red') # 10
-    scatter = ax.scatter(atoms[-24:-7,0],atoms[-24:-7,1], s=50,c='green') # 20
-    scatter = ax.scatter(atoms[-45:-14,0],atoms[-45:-14,1], s=50,c='cyan') # 30
-    scatter = ax.scatter(atoms[-73:-21,0],atoms[-73:-21,1], s=50,c='orange') # 40
+    #scatter = ax.scatter(atoms[-3:,0],atoms[-3:,1], s=50,c='blue') # 005
+    #scatter = ax.scatter(atoms[-10:-3,0],atoms[-10:-3,1], s=50,c='red') # 10
+    #scatter = ax.scatter(atoms[-24:-7,0],atoms[-24:-7,1], s=50,c='green') # 20
+    #scatter = ax.scatter(atoms[-45:-14,0],atoms[-45:-14,1], s=50,c='cyan') # 30
+    #scatter = ax.scatter(atoms[-73:-21,0],atoms[-73:-21,1], s=50,c='orange') # 40
     #scatter = ax.scatter(atoms[:72,0],atoms[:72,1], s=50,c='blue')#c=all_predictions[:72])    
     #scatter = ax.scatter(atoms[72+1:72+65,0],atoms[72+1:72+65,1], s=50,c='red')
     #scatter = ax.scatter(atoms[72+1:72+65,0],atoms[72+1:72+65,1], s=50,c='red')
@@ -262,12 +269,14 @@ def visualize_coordinates(x,y,z):
     ax.plot(x, y, z) # scatter plot
     plt.show() # show interactive image
 #---------------------------------------------------------------------------
+"""
 def reshapeCoordinates(atoms):
     #reshapedCoordinates = list()
     for molecule in atoms:
         reshape = molecule.reshape(3,12)
         #reshapedCoordinates.append(np.concatenate([reshape[0], reshape[1], reshape[2]], axis=0))
         finalset.append(np.concatenate([reshape[0], reshape[1], reshape[2]], axis=0))
+"""
 #---------------------------------------------------------------------------
 # Main
 #---------------------------------------------------------------------------
@@ -276,6 +285,7 @@ if __name__ == "__main__":
     densities = ["100","09","08","07","06","05","04","03","02","01","005"]
 
     finalset = list()
+    newAtoms = list()
     for i in densities:
         
         ### Getting files information and loading data into lists
@@ -308,18 +318,22 @@ if __name__ == "__main__":
         atomCoordinates = getPABACoordinates(graphIndexes, psfList, pdbList) # numpy Array
         #print atomCoordinates
     
-        #reshapedCoordinates = list()
-        for molecule in atomCoordinates:
-            reshape = molecule.reshape(3,12)
-            #reshapedCoordinates.append(np.concatenate([reshape[0], reshape[1], reshape[2]], axis=0))
-            finalset.append(np.concatenate([reshape[0], reshape[1], reshape[2]], axis=0))
+        distances = getDistancesAngles(atomCoordinates)
+        reshapedCoordinates = reshapeCoordinates(distances,2,11,'2D')
+        print "reshaoped: ", reshapedCoordinates.shape
+        newAtoms.append(np.concatenate(reshapedCoordinates, axis=0))
             
-    finalset = np.array(finalset)
+    finalset = np.concatenate(np.array(newAtoms),axis=1)
+        
+    print finalset
+    print finalset.shape
+    
     #print finalset
     #finalset = StandardScaler().fit_transform(finalset)
     
+    
     # Trying to classify
-    kmeans(finalset)
+    kmeansNew(finalset)
     #hierarchical(finalset)
     #tSNE(finalset,500)
     #dbscan(finalset)

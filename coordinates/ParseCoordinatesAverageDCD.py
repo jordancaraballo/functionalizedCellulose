@@ -68,6 +68,8 @@ for frame in dcd[0]:
         except IndexError:
             pass
     break
+    
+print uppTypePos
 #------------------------------------------------------------------------
 z_coor    = []
 contUpper = 0
@@ -108,5 +110,5 @@ for frame in dcd[3]:
         baseTypeList.append(float(frame[2][atom]))
 
 baseHeight = contTot / float(contPABA)
-for h in heights:
-    print h - baseHeight
+#for h in heights:
+#    print h - baseHeight

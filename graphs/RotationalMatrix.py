@@ -55,6 +55,7 @@ if __name__ == "__main__":
     # export file coordinates into numpy array
     file_input = genfromtxt('/home/jordancaraballo/Documents/Research/Cellulose/functionalizedCellulose/'+ \
                        'data/TetradecanePCA/RotationalPCA/Tetradecane005_LastFramePABACoordinates.txt', delimiter=',')
+    print (file_input)
     n_atoms = 52 # number of atoms per spacer arm
     # list index of atoms forming triangle for rotation = [C6: 26, C11: 38, C15: 20]
     triangle_atoms_indexes_tetra = {'lowest': 26, 'middle': 38, 'highest': 20} # dictionary with indexes of triangle atoms
@@ -63,13 +64,14 @@ if __name__ == "__main__":
     coordinates = np.split(file_input, len(file_input) / n_atoms) # (# atoms) / (# atoms spacer arm) = # of spacer arms
     coordinates_rotated = list() # store rotated molecules here, list of numpy arrays
 
+    print coordinates
     # Iterate through list of numpy arrays
     for molecule in coordinates:
         translated     = translate_coordinates_lowestAtom(molecule, triangle_atoms_indexes_tetra['lowest'])  # translate
         rotated_RyRx   = rotate_matrix_RyRxHighest(translated,      triangle_atoms_indexes_tetra['highest']) # rotate RyRx
         rotated_RyRxRz = rotate_matrix_RzMiddle(rotated_RyRx,       triangle_atoms_indexes_tetra['middle'])  # rotate Rz
         coordinates_rotated.append(rotated_RyRxRz)
-    print (coordinates_rotated[0])
+    #print (coordinates_rotated[0])
 
     # Testing
     visualize_coordinates(coordinates[1][:,0], coordinates[1][:,1], coordinates[1][:,2])

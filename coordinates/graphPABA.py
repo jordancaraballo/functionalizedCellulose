@@ -200,10 +200,10 @@ def visualize_coordinates(x,y,z):
 if __name__ == "__main__":
     
     ### Getting files information and loading data into lists
-    psfFile = "/home/jordancaraballo/Documents/Research/Cellulose/Tetradecane/Tetradecane05/Tetradecane05.psf" # name of the psf file
+    psfFile = "/home/jordancaraballo/Documents/Research/Cellulose/Tetradecane/Tetradecane100/Tetradecane100.psf" # name of the psf file
     psfList = parsePSF_toList(psfFile) # takes the list of psf lines
     
-    pdbFile = "/home/jordancaraballo/Documents/Research/Cellulose/Tetradecane/Tetradecane05/Tetradecane05_lastFrame.pdb"
+    pdbFile = "/home/jordancaraballo/Documents/Research/Cellulose/Tetradecane/Tetradecane100/Tetradecane100_lastFrame.pdb"
     pdbList = parsePDB_toList(pdbFile)
 
     ### Starting to define spacer arms information and coordinates

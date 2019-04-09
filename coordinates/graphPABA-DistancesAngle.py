@@ -7,17 +7,16 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import sys, os                                     # environmental variables
+import itertools                                   # iterate over list
+import heapq                                       # import for median
 import math                                        # import for distance calculation
 import numpy as np                                 # include numpy
 import subprocess                                  # execute bash commands if needed
 from scipy import optimize                         # for least square 
+from numpy.linalg import norm
 
+from sklearn import datasets
 from sklearn.cluster import KMeans
-from sklearn.cluster import DBSCAN
-from sklearn.manifold import TSNE
-from scipy.cluster.hierarchy import linkage, dendrogram
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
 #----------------------------------------------------------------------------------------------------------------
 # Functions
 #----------------------------------------------------------------------------------------------------------------
@@ -153,26 +152,7 @@ def getVarSpiral_A(molecule, index_highest=-1, index_base=0):
 #---------------------------------------------------------------------------
 # Playing with KMeans Algorithm
 def kmeans(atoms):
-    # Declaring Model
-    model = KMeans(n_clusters=3)
-    # Fitting Model
-    model.fit(atoms)
-    
-    # Predicitng a single input
-    #predicted_label = model.predict([[7.2, 3.5, 0.8, 1.6]])
-    
-    # Prediction on the entire data
-    all_predictions = model.predict(atoms)
-    #Plot the clusters obtained using k means
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    scatter = ax.scatter(atoms[:,0],atoms[:,1], c=all_predictions,s=50)
-    ax.set_title('K-Means Clustering')
-    plt.colorbar(scatter)
-    print(all_predictions)
 
-# Playing with KMeans Algorithm
-def kmeansNew(atoms):
     # Declaring Model
     model = KMeans(n_clusters=3)
     # Fitting Model
@@ -192,13 +172,13 @@ def kmeansNew(atoms):
     #Plot the clusters obtained using k means
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    #scatter = ax.scatter(atoms[:,0],atoms[:,1], c=all_predictions,s=50)
+    scatter = ax.scatter(atoms[:,0],atoms[:,1], c=all_predictions,s=50)
     
-    scatter = ax.scatter(atoms[-3:,0],atoms[-3:,1], s=50,c='blue') # 005
-    scatter = ax.scatter(atoms[-10:-3,0],atoms[-10:-3,1], s=50,c='red') # 10
-    scatter = ax.scatter(atoms[-24:-7,0],atoms[-24:-7,1], s=50,c='green') # 20
-    scatter = ax.scatter(atoms[-45:-14,0],atoms[-45:-14,1], s=50,c='cyan') # 30
-    scatter = ax.scatter(atoms[-73:-21,0],atoms[-73:-21,1], s=50,c='orange') # 40
+    #scatter = ax.scatter(atoms[-3:,0],atoms[-3:,1], s=50,c='blue') # 005
+    #scatter = ax.scatter(atoms[-10:-3,0],atoms[-10:-3,1], s=50,c='red') # 10
+    #scatter = ax.scatter(atoms[-24:-7,0],atoms[-24:-7,1], s=50,c='green') # 20
+    #scatter = ax.scatter(atoms[-45:-14,0],atoms[-45:-14,1], s=50,c='cyan') # 30
+    #scatter = ax.scatter(atoms[-73:-21,0],atoms[-73:-21,1], s=50,c='orange') # 40
     #scatter = ax.scatter(atoms[:72,0],atoms[:72,1], s=50,c='blue')#c=all_predictions[:72])    
     #scatter = ax.scatter(atoms[72+1:72+65,0],atoms[72+1:72+65,1], s=50,c='red')
     #scatter = ax.scatter(atoms[72+1:72+65,0],atoms[72+1:72+65,1], s=50,c='red')
@@ -206,54 +186,48 @@ def kmeansNew(atoms):
     ax.set_title('K-Means Clustering')
     #plt.colorbar(scatter)
     print(all_predictions)
-    
+
 def hierarchical(atoms):
+    # Importing Modules
+    from scipy.cluster.hierarchy import linkage, dendrogram
+    import matplotlib.pyplot as plt
+
+    """
+    Perform hierarchical clustering on samples using the
+    linkage() function with the method='complete' keyword argument.
+    Assign the result to mergings.
+    """
     #mergings = linkage(samples, method='complete')
     mergings = linkage(atoms, method='complete')
+
     dendrogram(mergings,
                leaf_rotation=90,
                leaf_font_size=6,
-               )    
+               )
+    
     plt.show()
-  
-def tSNE(atoms, learningRate=100):
+    
+def tSNE(atoms):
+    # Importing Modules
+    from sklearn.manifold import TSNE
+    import matplotlib.pyplot as plt
+    
+    # Loading dataset
+    #iris_df = datasets.load_iris()
+    
     # Defining Model
-    model = TSNE(learning_rate=learningRate)
+    model = TSNE(learning_rate=100)
+    
     # Fitting Model
     transformed = model.fit_transform(atoms)
+    print transformed
+    
     # Plotting 2d t-Sne
     x_axis = transformed[:, 0]
     y_axis = transformed[:, 1]
-    plt.scatter(x_axis, y_axis,c=atoms[:,2])#, c=iris_df.target)
-    plt.show()
-
-def dbscan(atoms):
-    # Declaring Model
-    dbscan = DBSCAN()
-    # Fitting
-    dbscan.fit(atoms)
-    # Transoring Using PCA
-    pca = PCA(n_components=2).fit(atoms)
-    pca_2d = pca.transform(atoms)
-    # Plotting 2d t-Sne
-    x_axis = pca_2d[:, 0]
-    y_axis = pca_2d[:, 1]
+    
     plt.scatter(x_axis, y_axis)#, c=iris_df.target)
     plt.show()
-
-def pca2d(atoms):
-    from sklearn.decomposition import PCA
-    pca = PCA(n_components=2)
-    X_reduced =pca.fit_transform(atoms)
-    plt.scatter(X_reduced[:, 0],X_reduced[:, 1])
-    
-def pca3d(atoms):
-    from sklearn.decomposition import PCA
-    fig = plt.figure(1, figsize=(8, 6))
-    ax = Axes3D(fig, elev=-150, azim=110)
-    pca = PCA(n_components=3)
-    X_reduced =pca.fit_transform(atoms)
-    ax.scatter3D(X_reduced[:, 0],X_reduced[:, 1],X_reduced[:, 2])
 #---------------------------------------------------------------------------
 # Purpose: Plotting scatter plot
 def visualize_coordinates(x,y,z):
@@ -262,94 +236,55 @@ def visualize_coordinates(x,y,z):
     ax.plot(x, y, z) # scatter plot
     plt.show() # show interactive image
 #---------------------------------------------------------------------------
-def reshapeCoordinates(atoms):
-    #reshapedCoordinates = list()
-    for molecule in atoms:
-        reshape = molecule.reshape(3,12)
-        #reshapedCoordinates.append(np.concatenate([reshape[0], reshape[1], reshape[2]], axis=0))
-        finalset.append(np.concatenate([reshape[0], reshape[1], reshape[2]], axis=0))
-#---------------------------------------------------------------------------
 # Main
 #---------------------------------------------------------------------------
 if __name__ == "__main__":
     
-    densities = ["100","09","08","07","06","05","04","03","02","01","005"]
+    ### Getting files information and loading data into lists
+    psfFile = "/home/jordancaraballo/Documents/Research/Cellulose/Tetradecane/Tetradecane005/Tetradecane005.psf" # name of the psf file
+    psfList = parsePSF_toList(psfFile) # takes the list of psf lines
+    
+    pdbFile = "/home/jordancaraballo/Documents/Research/Cellulose/Tetradecane/Tetradecane005/Tetradecane005_lastFrame.pdb"
+    pdbList = parsePDB_toList(pdbFile)
 
-    finalset = list()
-    for i in densities:
-        
-        ### Getting files information and loading data into lists
-        psfFile = "/home/jordancaraballo/Documents/Research/Cellulose/Tetradecane/Tetradecane"+i+"/Tetradecane"+i+".psf" # name of the psf file
-        psfList = parsePSF_toList(psfFile) # takes the list of psf lines
-        
-        pdbFile = "/home/jordancaraballo/Documents/Research/Cellulose/Tetradecane/Tetradecane"+i+"/Tetradecane"+i+"_lastFrame.pdb"
-        pdbList = parsePDB_toList(pdbFile)
+    ### Starting to define spacer arms information and coordinates
+    pabaAtoms = getAtomsMol(psfList, 'PAB') # takes paba atoms from psflist
+    baseAtoms  = getAtoms(psfList, 'C15', tcolumn=5) # takes C15 (base carbon) atom from each molecule
+    upperAtoms = getAtoms(psfList, 'C60', tcolumn=5) # takes C06 (upper carbon) atom from each molecule
     
-        ### Starting to define spacer arms information and coordinates
-        pabaAtoms = getAtomsMol(psfList, 'PAB') # takes paba atoms from psflist
-        baseAtoms  = getAtoms(psfList, 'C15', tcolumn=5) # takes C15 (base carbon) atom from each molecule
-        upperAtoms = getAtoms(psfList, 'C60', tcolumn=5) # takes C06 (upper carbon) atom from each molecule
-        
-        ### Starting to define graph and shortests path
-        numBonds  = (subprocess.check_output("cat " + psfFile + "| grep NBOND | cut -d \" \" -f4", shell=True))[:-1]
-        bondConnects = getBonds(psfList, numBonds) # get bond connections list
-        
-        G = nx.Graph()
-        G.add_edges_from(bondConnects)
-        Gsub = G.subgraph(pabaAtoms)
-        #nx.draw(Gsub)
+    ### Starting to define graph and shortests path
+    numBonds  = (subprocess.check_output("cat " + psfFile + "| grep NBOND | cut -d \" \" -f4", shell=True))[:-1]
+    bondConnects = getBonds(psfList, numBonds) # get bond connections list
     
-        ### Starting to get atom indices and coordinates from the spacer arm    
-        comp = list(Gsub.subgraph(c) for c in nx.connected_components(Gsub))
-        graphIndexes = getSpacerArmGraph(comp,baseAtoms,upperAtoms) #list of atom indexes
-        
-        
-        #print graphIndexes[0]
-        atomCoordinates = getPABACoordinates(graphIndexes, psfList, pdbList) # numpy Array
-        #print atomCoordinates
+    G = nx.Graph()
+    G.add_edges_from(bondConnects)
+    Gsub = G.subgraph(pabaAtoms)
+    #nx.draw(Gsub)
+
+    ### Starting to get atom indices and coordinates from the spacer arm    
+    comp            = list(Gsub.subgraph(c) for c in nx.connected_components(Gsub))
+    graphIndexes    = getSpacerArmGraph(comp,baseAtoms,upperAtoms) #list of atom indexes    
+    atomCoordinates = getPABACoordinates(graphIndexes, psfList, pdbList) # numpy Array
+
+    ### Reshape coordinates 
+    #reshapeCoordinates(atomCoordinates) # reshape coordinates (3,12) for better visualization
     
-        #reshapedCoordinates = list()
-        for molecule in atomCoordinates:
-            reshape = molecule.reshape(3,12)
-            #reshapedCoordinates.append(np.concatenate([reshape[0], reshape[1], reshape[2]], axis=0))
-            finalset.append(np.concatenate([reshape[0], reshape[1], reshape[2]], axis=0))
-            
-    finalset = np.array(finalset)
-    #print finalset
-    #finalset = StandardScaler().fit_transform(finalset)
+    ### Calculate distance and angle between coordinates
+    distances = getDistancesAngles(atomCoordinates)
+    reshapedCoordinates = reshapeCoordinates(distances,2,11,'2D')
+    print reshapedCoordinates
     
-    # Trying to classify
-    kmeans(finalset)
-    #hierarchical(finalset)
-    #tSNE(finalset,500)
-    #dbscan(finalset)
-    #pca2d(finalset)
-    #pca3d(finalset)
-    
-    ### For each molecule in the system
-    #coordinates_rotated = list() # will be a list of numpy arrays
-    #for molecule in atomCoordinates:
-        #plt.plot(molecule[:,0], molecule[:,1], 'ro')
-    #    visualize_coordinates(molecule[:,0],molecule[:,1], molecule[:,2])
-    #    plt.show()
         
-        #translated     = translate_coordinates_lowestAtom(molecule)  # translate
-        #rotated_RyRx   = rotate_matrix_RyRxHighest(translated)       # rotate RyRx
-        #rotated_RyRxRz = rotate_matrix_RzMiddle(rotated_RyRx)        # rotate Rz
-        #coordinates_rotated.append(rotated_RyRxRz)                   # append modified coordinates
-        #getVarSpiral_A(rotated_RyRxRz)                               # get A from spiral equation
-        #getVarSpiral_R(rotated_RyRxRz)                               # get R from spiral equation
+
+    #res = abNorm[0] * bcNorm[0] + abNorm[1] * bcNorm[1] + abNorm[2] * bcNorm[2];
+    #angle = arccos(res)*180.0/ pi
+    #print angle    
     
-        ### Spiral equation variables
-        # Parametric Equation: E = (R cos P t + x0 + (alpha)(t), R sen P t + y0 + (beta)(t), (A)(t) + z0 + (lamda)(t))
-        
-    """
-    # Pasos necesarios:
-    1. Definir funcion F([R,x0,alpha,y0,betha,z0,lamda,P])
-    2. min t = (Ex(t)-xi)^2 + (Ey(t)-yi)^2 + (Ez(t)-zi)^2 ===  con scipy
-    3. Resolver (d (min t)/dt) = 0 con algun metodo numero (Newton maybe)
-    """
-    ### Solving for the Spiral equation
+    
+    #kmeans(distances)
+    #hierarchical(reshapedCoordinates)
+    #tSNE(reshapedCoordinates)
+
     
     
     
