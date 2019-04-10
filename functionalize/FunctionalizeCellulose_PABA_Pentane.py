@@ -13,6 +13,8 @@
 #-------------------------------------------------------------------------------------------------------
 
 # Import libraries
+import sys, os # environmental variables
+sys.path.append('/home/jordancaraballo/Documents/Research/wolffia/')  # add wolffia repository for DCDReader utility
 from lib.chemicalGraph.molecule.polymer.Cellulose import Cellulose
 from lib.chemicalGraph.molecule.solvent.PABA import PABA_Pentane
 from lib.chemicalGraph.Mixture import Mixture
@@ -21,9 +23,11 @@ import random
 random.seed()
 
 # Elements for crystal construction - this options are the ones that initialize the crystal arrangement
-POLY_LENGTH  = 4 # number of the polymer chains in z axis (from lower to top)
-HORIZONTAL_N = 6 # number of the polymer chains in x axis (from left to right)
-VERTICAL_N   = 4 # number of chains in y axis (from front to the back)
+POLY_LENGTH   = 8 # number of the polymer chains in z axis (from lower to top)
+#HORIZONTAL_N = 6 # number of the polymer chains in x axis (from left to right)
+#VERTICAL_N   = 4 # number of chains in y axis (from front to the back)
+HORIZONTAL_N  = 12
+VERTICAL_N    = 4
 
 # Elements for crystal arrangement
 dx  = 8.0 # number of armstrongs to move crystals in x axis
@@ -65,7 +69,7 @@ for i in range(len(densities)):
 	for m in mixture.moleculeGenerator():
 	  for atom in m:
 	    t = m.getAtomAttributes(atom).getInfo().getType()
-	    if t == "H13" or t == "H19":
+	    if t == "H130" or t == "H190":
 	     oxygen = m.neighbors(atom)[0]
 	     coords = m.getAtomAttributes(oxygen).getCoord()
 	     if coords[2] > (VERTICAL_N-1) * dz:  # get only the top O's
@@ -111,9 +115,9 @@ for i in range(len(densities)):
 
 	    #neutralize total charge
 	    ch = oh[0].atom_attributes(oxygen).getInfo().getCharge()
-	    if atype == "O200":
+	    if atype == "O2" or atype == "O200":
 	      oh[0].atom_attributes(oxygen).getInfo().setCharge(ch-chrgToSubstractO200)
-	    else:
+	    if atype == "O6" or atype == "O600":
 	      oh[0].atom_attributes(oxygen).getInfo().setCharge(ch-chrgToSubstract)
 
 	  oh[0].getForceField().setBond(('C800', 'O600'), 1.42, 1)

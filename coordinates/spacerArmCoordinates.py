@@ -51,10 +51,8 @@ def getCoordinatesSingleFrameSpacerArm(pdb_list, psf_list, singleDCD, typesSA):
                 pass
     return molecules_list
 
-
-"""
 # Get coordinates from a single frame, just the spacer arm atoms. No hydrogens, no nothing.
-def getCoordinatesSingleFrameSpacerArm(pdb_list, psf_list, singleDCD, molLength):
+def getCoordinatesSingleFrameSpacerArmOld(pdb_list, psf_list, singleDCD, molLength):
     tempCoors   = list() # list to store temporary coordinates for each pABA
     coordinates = list()
     tempcoordinates_types = list() # list to store final coordinates types
@@ -78,7 +76,7 @@ def getCoordinatesSingleFrameSpacerArm(pdb_list, psf_list, singleDCD, molLength)
             except IndexError: # some lines are trash lines from the pdb file
                 pass
     return coordinates, coordinates_types # multidimensional array
-"""
+
 #---------------------------------------------------------------------------
 # Main
 #---------------------------------------------------------------------------

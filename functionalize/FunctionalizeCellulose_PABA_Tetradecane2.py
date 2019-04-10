@@ -58,7 +58,7 @@ for i in range(len(densities)):
 	    newMonomer = monomer.copy()
 	    newMonomer.moveBy([dx * i + dxz * (j%2), dy * (i%2), dz * j])
 	    mixture.add(newMonomer)
-	    print "layer " + str(j) + ", row " + str(i)
+	    #print "layer " + str(j) + ", row " + str(i)
 
 	# Generate last layer
 	for i in range(HORIZONTAL_N):
@@ -106,14 +106,14 @@ for i in range(len(densities)):
 
 	  oxygen = oh[0].neighbors(oh[1])[0]
 
-          print "atype the H: " + oh[2]
+          #print "atype the H: " + oh[2]
 
 	  oh[0].removeAtom(oh[1])  # remove hydrogen from celulose
 	  #print "PABA Ox " + str(oxygen)
 	  coords = oh[0].getAtomAttributes(oxygen).getCoord()
 	  atype = oh[0].getAtomAttributes(oxygen).getInfo().getType()
 
-          print "buscando tipo: " + atype
+          #print "buscando tipo: " + atype
 
 	  if coords[2] > (VERTICAL_N-1) * dz:  # get only the top O's
 	    newPABA = paba.copy()
@@ -126,16 +126,16 @@ for i in range(len(densities)):
 	    #neutralize total charge
 	    ch = oh[0].atom_attributes(oxygen).getInfo().getCharge()
 
-            print "Charge of O: ", ch
+            #print "Charge of O: ", ch
 
 	    if atype == "O2" or atype == "O200":
 	      #oh[0].atom_attributes(oxygen).getInfo().setCharge(ch-(0.2199))
               oh[0].atom_attributes(oxygen).getInfo().setCharge(-0.5699) 
-              print "New Charge: ", oh[0].atom_attributes(oxygen).getInfo().getCharge()
+              #print "New Charge: ", oh[0].atom_attributes(oxygen).getInfo().getCharge()
 	    if atype == "O6" or atype == "O600":
 	      oh[0].atom_attributes(oxygen).getInfo().setCharge(ch+(0.0801))
 
-        print "Force field ", oh[0].getForceField()._BONDS
+        #print "Force field ", oh[0].getForceField()._BONDS
 
         oh[0].getForceField().setBond(('C15', 'O6'), 1.42, 1)
         oh[0].getForceField().setBond(('C15', 'O6'), 428, 0)

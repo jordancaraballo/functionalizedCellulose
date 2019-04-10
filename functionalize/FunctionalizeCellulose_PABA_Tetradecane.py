@@ -13,6 +13,8 @@
 #-------------------------------------------------------------------------------------------------------
 
 # Import libraries
+import sys, os # environmental variables
+sys.path.append('/home/jordancaraballo/Documents/Research/wolffia/')  # add wolffia repository for DCDReader utility
 from lib.chemicalGraph.molecule.polymer.Cellulose import Cellulose
 from lib.chemicalGraph.molecule.solvent.PABA import PABA_Tetradecane
 from lib.chemicalGraph.Mixture import Mixture
@@ -21,9 +23,11 @@ random.seed()
 from math import ceil
 
 # Elements for crystal construction - this options are the ones that initialize the crystal arrangement
-POLY_LENGTH  = 4 # number of the polymer chains in z axis (from lower to top)
-HORIZONTAL_N = 6 # number of the polymer chains in x axis (from left to right)
-VERTICAL_N   = 4 # number of chains in y axis (from front to the back)
+POLY_LENGTH   = 8 # number of the polymer chains in z axis (from lower to top)
+#HORIZONTAL_N = 6 # number of the polymer chains in x axis (from left to right)
+#VERTICAL_N   = 4 # number of chains in y axis (from front to the back)
+HORIZONTAL_N  = 12
+VERTICAL_N    = 4
 
 # Elements for crystal arrangement
 dx  = 8.0 # number of armstrongs to move crystals in x axis
@@ -32,8 +36,10 @@ dz  = 4.  # number of armstrongs to move crystals in z axis
 dxz = 3   # common movement to use in a loop
 
 # Lists of densities and and names for output files
-densities = [100.0,0.90,0.80,0.70,0.60,0.50,0.40,0.30,0.20,0.10,0.05]
-d_names   = ["100","09","08","07","06","05","04","03","02","01","005"]
+#densities = [100.0,0.90,0.80,0.70,0.60,0.50,0.40,0.30,0.20,0.10,0.05]
+#d_names   = ["100","09","08","07","06","05","04","03","02","01","005"]
+densities = [0.05]
+d_names   = ["005"]
 
 # Iterate through every density
 for i in range(len(densities)):
@@ -66,7 +72,7 @@ for i in range(len(densities)):
 	for m in mixture.moleculeGenerator():
 	  for atom in m:
 	    t = m.getAtomAttributes(atom).getInfo().getType()
-	    if t == "H13" or t == "H19":
+	    if t == "H130" or t == "H190":
 	     oxygen = m.neighbors(atom)[0]
 	     coords = m.getAtomAttributes(oxygen).getCoord()
 	     if coords[2] > (VERTICAL_N-1) * dz:  # get only the top O's
