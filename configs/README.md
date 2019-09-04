@@ -1,6 +1,6 @@
 # Functionalized Cellulose - configs/
 
-Set of configuration files for using NAMD2 in paralel. The files are written accordingly to the number of CPUs available in the system for simulations.
+Set of configuration files for running NAMD2 in paralel . The files are written accordingly to the number of CPUs available in the system for simulations.
 
 ## Installation
 

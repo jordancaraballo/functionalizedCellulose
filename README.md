@@ -1,9 +1,16 @@
 # Functionalized Cellulose
-Scripts written to facilitate and analyze the functionalization of Cellulose nanocrystals and pABA ligands.
+
+Scripts developed to facilitate and analyze the functionalization of Cellulose nanocrystals and pABA ligands.
+There are additional scripts included for regular molecular dynamic simulations use.
 
 ## Getting Started
 
-The aim of this project is to group all the scripts used to functionalize cellulose nanocrystals for molecular dynamics simulations. These scripts are written in Python 2.3 and work together with wolffia (https://github.com/compMathUPRH/wolffia). The goal of this work is to study the interaction between pABA functionalized crystals and selected proteins by means of molecular dynamics simulations using NAMD.
+The aim of this project is to group all the scripts used to functionalize cellulose nanocrystals for molecular dynamics simulations.
+Scripts are written in Python 2.4 and 3.7. Many of them depend on wolffia (https://github.com/compMathUPRH/wolffia).
+The goal of this work is to study the interaction between pABA functionalized crystals and selected proteins by means of molecular dynamics simulations using NAMD2.
+
+
+
 
 ## Prerequisites
 

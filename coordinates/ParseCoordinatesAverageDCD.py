@@ -21,13 +21,13 @@
 import heapq
 import math
 import sys, os
-sys.path.append('/home/Fulano/wolffia/')
+sys.path.append('/home/jordancaraballo/Documents/Research/wolffia')
 from lib.io.dcd import DCDReader
 import numpy as np
 
 # Global variables
 mix = "Pentane100" # number of the mixture - e.g Pentane09
-workPath = "/home/Fulano/" + mix + "/"
+workPath = "/home/jordancaraballo/Documents/Research/Cellulose/Pentane/" + mix + "/"
 psfFile  = workPath + mix + ".psf"                 # name of the psf file
 pdbFile  = workPath + mix + "_lastFrame.pdb"       # header of the pdb files
 dcdFile  = workPath + mix + "_Last1000Frames.dcd"  # dcd file
@@ -110,5 +110,5 @@ for frame in dcd[3]:
         baseTypeList.append(float(frame[2][atom]))
 
 baseHeight = contTot / float(contPABA)
-#for h in heights:
-#    print h - baseHeight
+for h in heights:
+    print h - baseHeight

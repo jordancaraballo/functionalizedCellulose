@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 # Global variables for the graph
 #name    = "../coordinates/Heptane"
-name    = "../data/Tetradecane"
+name    = "/home/jordancaraballo/Documents/Research/Cellulose/functionalizedCellulose/analyzing/finalAnalysis/data/TetradecaneBig"
 files   = ["005", "01", "02", "03","04","05","06", "07", "08", "09", "100"]
 yValues = [5.00, 10.00, 20.00, 30.00, 40.00, 50.00, 60.00, 70.00, 80.00, 90.00, 100.00]
 colors  = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w','cyan', 'fuchsia', "orange"]
@@ -27,7 +27,7 @@ minList = []
 maxList = []
 
 for i in range(len(files)):
-    f = open(name + files[i] + ".txt") # open file with coordinates
+    f = open(name + files[i] + "AverageHeights.txt") # open file with coordinates
     tmpArr = np.array([float(x) for x in f.read().split("\n")[:-1]]) # split and clean the data from the file
     print tmpArr
     minList.append(min(tmpArr))
@@ -42,12 +42,12 @@ dMax = max(maxList)
 
 # Define figures for the plot
 fig = plt.figure()
-fig.suptitle('Distribution of PABA Heights - Minus Base',fontsize=18)
+fig.suptitle('Distribution of PABA Heights',fontsize=18)
 
 ax  = fig.add_subplot(111)
 fig.subplots_adjust(top=0.90)
 
-ax.set_title('7-atoms spacer arm')
+ax.set_title('14-atoms spacer arm')
 
 ax.set_xlabel('PABA Height (A)')
 ax.set_ylabel('PABA Occupancy')
@@ -67,3 +67,4 @@ for i in range(len(files)):
     ax.set_xlim([0, 28])
 
 plt.show()
+fig.savefig('freq-TetradecaneBig-042919.png')

@@ -6,3 +6,6 @@ data/
 
 # Ignore results
 /HeigthsCoordinates_05012018.tar.gz
+
+# Ignore pycharmm files
+.idea/

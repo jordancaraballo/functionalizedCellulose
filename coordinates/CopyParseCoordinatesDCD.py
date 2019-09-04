@@ -28,7 +28,7 @@ import numpy as np                        # include numpy
 #-------------------------------------------------------------------------------------------------------
 # Global variables
 #-------------------------------------------------------------------------------------------------------
-mix      = "Pentane100"                           # name of the mixture - e.g Pentane09
+mix      = "Pentane09"                           # name of the mixture - e.g Pentane09
 workPath = "/home/jordancaraballo/Documents/Research/Cellulose/Pentane/" + mix + "/"    # path to mixture - parental directory
 psfFile  = workPath + mix + ".psf"                # name of the psf file
 pdbFile  = workPath + mix + "_lastFrame.pdb"      # header of the pdb files
@@ -37,7 +37,7 @@ dcdFile  = workPath + mix + "_Last1000Frames.dcd" # dcd file
 # Atom types to detect
 upper_types = ["N0", "N1"] # atoms to get coordinates that we want
 base_type   = 'O6'         # atom to calculate the height of pABA
-mid_type    = 'C8'         # atom that connects pABA and Cellulose, pentane is C8, tetradecane is C15
+mid_type    = 'C8'         # atom that connects pABA and Cellulose, pentane is C8, tetradecane is C15, C10 for heptane
 
 # Split lines from coordinates, atom, and trajectories files
 psf_list = [line.strip().split() for line in open(psfFile,'r').readlines() ][6:]       # list with psf file lines 
