@@ -10,34 +10,48 @@
 #          Jose O. Sotero-Esteva         University of Puerto Rico at Humacao
 #-------------------------------------------------------------------------------------------------------
 
-# Enter the names of the dcd and the initial pdb file
-# catdcd - path to catdcd binary file E.g.: /Desktop/Cellulose/SimulationsDone/catdcd
-# if it is installed it can be plain catdcd
-# path - path for the resulting pdb files E.g.: /Desktop/Cellulose/SimulationsDone/Last1000PDBs/
-# dcd_file - path to dcd file E.g.: /Desktop/Cellulose/SimulationsDone/name.dcd
-# pdb_file - path to pdb file E.g.: /Desktop/Cellulose/SimulationsDone/name.pdb
-catdcd="None"
-path="None"
-dcd_file="None"
-pdb_file="None"
+## Path to catdcd file - default is assuming it is installed
+catdcd="catdcd"
 
-# Simulation name (descriptive name that will be in the output files header)
-# E.g. Pentane100
-description="None"
+## Iterate to get arguments from command line
+## Ignoring input validation for now since this is called from another file
+while [ -n "$1" ]; do # while loop starts
 
-# Select the initial frame from the dcd file
-InitFrame=9000
-LastFrame=1000
+    case "$1" in
 
-# Enter in a loop to save the pdb file from each frame selected
-for (( i=1; i<=$LastFrame; i++ ))
+    --dcd) # input dcd file with simulation frames
+        dcd="$2"
+        shift
+        ;;
+    --pdb) # input pdb file with simulation atoms, this will facilitate the conversion of pdb frames
+        pdb="$2"
+        shift
+        ;;
+    --first) # first frame to start extracting coordinates
+        first="$2"
+        shift
+        ;;
+    --last) # last frame to start extracting coordinates
+        last="$2"
+        shift
+        ;;
+    --out) # output description
+        out="$2"
+        shift
+
+        break
+        ;;
+
+    *) echo "Option $1 not recognized" ;;
+
+    esac
+    shift
+
+done
+
+## Enter in a loop to save the pdb file from each frame selected
+for (( i=1; i<=$last; i++ ))
 do
-    # Update the frame with a counter
-    frame=$[$i+$InitFrame]
-
-    # Run the catdcd tool with the given parameters
-    $catdcd -o $path${description}_Frame${frame}.pdb -otype pdb -s $pdb_file -stype pdb -first $frame -last $frame $dcd_file
-
-    # This will produce a bunch of pdb files in the current path representing the selected frame
-
+    frame=$[$i+$first] # Update the frame with a counter
+    $catdcd -o ${out}_Frame${frame}.pdb -otype pdb -s $pdb -stype pdb -first $frame -last $frame $dcd
 done
